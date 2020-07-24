@@ -57,21 +57,29 @@ def decodeVcardArabic(text: str) -> str:
     return enText.decode("UTF-8")
 
 
+def supString(s1, s2):
+    return s1.replace(s2, emptyString)
+
+
 def encodedArabicList(textList: str) -> list:
     encodedList = []
     for text in textList:
-        encodedList += encodeVcardArabic(text)
+        encodedList.append(encodeVcardArabic(text))
     return encodedList
 
 
 def encodedArabicFirstName(contact: Contact) -> str:
     nameList = contact.username.split()
     encodedNameList = encodedArabicList(nameList)
-    return "".join(encodedNameList)
+    out = "=20".join(encodedNameList)
+    return VcardCharsetQ + out
 
 
 def getSupportedTextOf(text: str):
-    pass
+    if isProbablyArabicText(text):
+        return VcardCharsetQ + encodeVcardArabic(text)
+    else:
+        return text
 
 
 def isOrgLine(self, line):
@@ -115,7 +123,7 @@ def getContactParsedText(text: str) -> str:
 
 
 def getVcardLineContent(line) -> str:
-    return "".join(line.split(":")[1:])
+    return ":".join(line.split(":")[1:])
 
 
 def isUserSpecifiedFileName(filename) -> bool:

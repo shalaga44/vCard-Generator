@@ -1,4 +1,5 @@
 from Utils.functions import *
+from Utils.Strings import *
 
 
 def isEmpty(text):
@@ -45,12 +46,12 @@ class VCARDGenerator:
             temText += self.vcardStartQ + newLine
             temText += self.vcardVersionQ + newLine
             temText += self.vcardNameQ + self.getOrdered(contact.username) + newLine
-            temText += self.vcardFirstNameQ + contact.username + newLine
-            temText += self.vcardCellQ + contact.cell + newLine
-            temText += self.vcardEmailQ + contact.email + newLine
-            temText += self.vcardOrgQ + contact.org + newLine
-            temText += self.vcardTitleQ + contact.title + newLine
-            temText += self.vcardNoteQ + contact.note + newLine
+            temText += self.vcardFirstNameQ + getSupportedTextOf(contact.username) + newLine
+            temText += self.vcardCellQ + getSupportedTextOf(contact.cell) + newLine
+            temText += self.vcardEmailQ + getSupportedTextOf(contact.email) + newLine
+            temText += self.vcardOrgQ + getSupportedTextOf(contact.org) + newLine
+            temText += self.vcardTitleQ + getSupportedTextOf(contact.title) + newLine
+            temText += self.vcardNoteQ + getSupportedTextOf(contact.note) + newLine
             temText += self.vcardEndQ + newLine
 
             self.text += self.cleanedVcardText(temText)

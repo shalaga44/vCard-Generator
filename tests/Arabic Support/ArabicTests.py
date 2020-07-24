@@ -33,5 +33,17 @@ class GeneralTestCases(unittest.TestCase):
             self.assertEqual(arabicContact.org,
                              decodeVcardArabic(encodeVcardArabic(arabicContact.org)))
 
+    def test_has_ar_first_name(self):
+        for line in getLinesIn(self.generator.getVcardText()):
+            if isNewContact(self, line):
+                self.contact = self.testContacts.pop(0)
+            if isLineFirstName(self, line):
+                lineContent = getVcardLineContent(line)
+                deLineContent = decodeVcardArabic(supString(lineContent, VcardCharsetQ))
+                if isProbablyArabicText(self.contact.username):
+                    deContactFirstName = encodedArabicFirstName(self.contact)
+                    self.assertEqual(deContactFirstName, lineContent)
+                    self.assertEqual(self.contact.username, deLineContent)
+
     if __name__ == '__main__':
         unittest.main()
