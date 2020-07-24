@@ -1,6 +1,7 @@
 from datetime import date
 
 from ContactsGenerators.EnglishContactGenerator import *
+from ContactsGenerators.ArabicContactGenerator import *
 from Utils.Strings import *
 
 
@@ -19,7 +20,7 @@ def isCellLine(self, line):
 
 
 def isLineName(self, line):
-    if line[:len(self.generator.vcardNameQ)] == self.generator.vcardNameQ:
+    if line[:len(self.generator.vcardNameQ) + 1] == self.generator.vcardNameQ + ":":
         return True
     else:
         return False
@@ -32,6 +33,62 @@ def isLineFirstName(self, line):
         return False
 
 
+def isProbablyArabicText(text):
+    isArabic = False
+    for s in text:
+        # The range 0600 - 06E0 is the code point range of Arabic characters and symbols
+        # http://www.tamasoft.co.jp/en/general-info/unicode.html
+        if 1536 <= ord(s) <= 1760:
+            return True
+    return isArabic
+
+
+def encodeVcardArabic(text: str) -> str:
+    enText = text.encode("UTF-8")
+    hexTextList = str(enText).split("\\x")[1:-1] + [str(enText).split("\\x")[-1][:-1]]
+    joinedHexText = "=" + "=".join(hexTextList).replace(" ", spaceUnicode)
+    return joinedHexText
+
+
+def decodeVcardArabic(text: str) -> str:
+    hexTextList = text.split("=")[1:]
+    joinedHexText = " ".join(hexTextList)
+    enText = bytes.fromhex(joinedHexText)
+    return enText.decode("UTF-8")
+
+
+def supString(s1, s2):
+    return s1.replace(s2, emptyString)
+
+
+def encodedArabicList(textList: list) -> list:
+    encodedList = []
+    for text in textList:
+        encodedList.append(encodeVcardArabic(text))
+    return encodedList
+
+
+def encodedArabicFirstName(contact: Contact) -> str:
+    nameList = contact.username.split()
+    encodedNameList = encodedArabicList(nameList)
+    out = spaceUnicode.join(encodedNameList)
+    return VcardCharsetQ + out
+
+
+def getSupportedTextOf(text: str):
+    if isProbablyArabicText(text):
+        return arDelimiter + VcardCharsetQ + encodeVcardArabic(text)
+    else:
+        return enDelimiter + text
+
+
+def getSupportedListTextOf(text: str):
+    if isProbablyArabicText(text):
+        return encodedArabicList(text.split())
+    else:
+        return text.split()
+
+
 def isOrgLine(self, line):
     if line[:len(self.generator.vcardOrgQ)] == self.generator.vcardOrgQ:
         return True
@@ -39,11 +96,19 @@ def isOrgLine(self, line):
         return False
 
 
+def generateTestArContacts(count=7):
+    testContacts = []
+    for nameLength in range(1, count, 1):
+        contact = generateSimpleSingleArContact(nameLength)
+        testContacts.append(contact)
+    return testContacts
+
+
 def generateTestEnContact(count=7):
     testContacts = []
     for nameLength in range(1, count, 1):
         contact = generateSimpleSingleEnContact(nameLength)
-        testContacts.append( contact)
+        testContacts.append(contact)
     return testContacts
 
 
@@ -52,8 +117,8 @@ def getLinesIn(text) -> str:
         yield line
 
 
-def getContactNameParsed(contact: Contact) -> str:
-    nameList = contact.username.split()
+def getContactParsedText(text: str) -> str:
+    nameList = text.split()
     if len(nameList) == 1:
         return f";{nameList[0]};;;"
     elif len(nameList) == 2:
@@ -65,7 +130,7 @@ def getContactNameParsed(contact: Contact) -> str:
 
 
 def getVcardLineContent(line) -> str:
-    return "".join(line.split(":")[1:])
+    return ":".join(line.split(":")[1:])
 
 
 def isUserSpecifiedFileName(filename) -> bool:

@@ -1,4 +1,5 @@
 from Utils.functions import *
+from Utils.Strings import *
 
 
 def isEmpty(text):
@@ -15,13 +16,13 @@ class VCARDGenerator:
         self.text = emptyString
         self.vcardStartQ = "BEGIN:VCARD"
         self.vcardVersionQ = "VERSION:2.1"
-        self.vcardNameQ = "N:"
-        self.vcardFirstNameQ = "FN:"
-        self.vcardCellQ = "TEL;CELL:"
-        self.vcardEmailQ = "EMAIL;HOME:"
-        self.vcardOrgQ = "ORG:"
-        self.vcardTitleQ = "TITLE:"
-        self.vcardNoteQ = "NOTE:"
+        self.vcardNameQ = "N"
+        self.vcardFirstNameQ = "FN"
+        self.vcardCellQ = "TEL;CELL"
+        self.vcardEmailQ = "EMAIL;HOME"
+        self.vcardOrgQ = "ORG"
+        self.vcardTitleQ = "TITLE"
+        self.vcardNoteQ = "NOTE"
         self.vcardEndQ = "END:VCARD"
 
     def makeVcardFromContacts(self, contacts):
@@ -41,16 +42,17 @@ class VCARDGenerator:
         self.isContactsChanged = False
         for contact in self.contacts:
             temText = emptyString
+            self.contact = contact
 
             temText += self.vcardStartQ + newLine
             temText += self.vcardVersionQ + newLine
-            temText += self.vcardNameQ + self.getOrdered(contact.username) + newLine
-            temText += self.vcardFirstNameQ + contact.username + newLine
-            temText += self.vcardCellQ + contact.cell + newLine
-            temText += self.vcardEmailQ + contact.email + newLine
-            temText += self.vcardOrgQ + contact.org + newLine
-            temText += self.vcardTitleQ + contact.title + newLine
-            temText += self.vcardNoteQ + contact.note + newLine
+            temText += self.vcardNameQ + self.getOrdered(getSupportedListTextOf(contact.username)) + newLine
+            temText += self.vcardFirstNameQ + getSupportedTextOf(contact.username) + newLine
+            temText += self.vcardCellQ + getSupportedTextOf(contact.cell) + newLine
+            temText += self.vcardEmailQ + getSupportedTextOf(contact.email) + newLine
+            temText += self.vcardOrgQ + getSupportedTextOf(contact.org) + newLine
+            temText += self.vcardTitleQ + getSupportedTextOf(contact.title) + newLine
+            temText += self.vcardNoteQ + getSupportedTextOf(contact.note) + newLine
             temText += self.vcardEndQ + newLine
 
             self.text += self.cleanedVcardText(temText)
@@ -65,14 +67,13 @@ class VCARDGenerator:
     @staticmethod
     def cleanedVcardText(text):
         cleanText = emptyString
-        for t in text.strip().split(newLine):
+        for t in getLinesIn(text.strip()):
             if t.split(":")[1] != '':
                 cleanText += t + newLine
         return cleanText
 
-    @staticmethod
-    def getOrdered(text) -> str:
-        outSetText = text.split()
+    def getOrdered(self, outSetText) -> str:
+        isArabic = isProbablyArabicText(self.contact.username)
         outText = emptyString
         if len(outSetText) == 1:
             outText = f";{outSetText[0]};;;"
@@ -83,8 +84,14 @@ class VCARDGenerator:
         elif len(outSetText) > 3:
             last = outSetText.pop()
             beforeLast = outSetText.pop()
-            outText = f"{last}; {' '.join(outSetText)};{beforeLast};;"
-        return outText
+            if isArabic:
+                outText = f"{last};{spaceUnicode.join(outSetText)};{beforeLast};;"
+            else:
+                outText = f"{last}; {' '.join(outSetText)};{beforeLast};;"
+        if isArabic:
+            return arDelimiter + VcardCharsetQ + outText
+        else:
+            return enDelimiter + outText
 
     def getFormattedDefaultFileName(self) -> str:
         if self.hasOrganization():
@@ -105,5 +112,5 @@ class VCARDGenerator:
 
     def proceed_export_vcf(self, filename):
         with open(filename, ioWriteFlag) as f:
-            for line in self.getVcardText().split(newLine):
+            for line in getLinesIn(self.getVcardText()):
                 f.write(line + newLine)
