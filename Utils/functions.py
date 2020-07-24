@@ -1,6 +1,7 @@
 from datetime import date
 
 from ContactsGenerators.EnglishContactGenerator import *
+from ContactsGenerators.ArabicContactGenerator import *
 from Utils.Strings import *
 
 
@@ -32,11 +33,29 @@ def isLineFirstName(self, line):
         return False
 
 
+def isProbablyArabicText(text):
+    isArabic = False
+    for s in text:
+        # The range 0600 - 06E0 is the code point range of Arabic characters and symbols
+        # http://www.tamasoft.co.jp/en/general-info/unicode.html
+        if 1536 <= ord(s) <= 1760:
+            return True
+    return isArabic
+
+
 def isOrgLine(self, line):
     if line[:len(self.generator.vcardOrgQ)] == self.generator.vcardOrgQ:
         return True
     else:
         return False
+
+
+def generateTestArContacts(count=7):
+    testContacts = []
+    for nameLength in range(1, count, 1):
+        contact = generateSimpleSingleArContact(nameLength)
+        testContacts.append(contact)
+    return testContacts
 
 
 def generateTestEnContact(count=7):
