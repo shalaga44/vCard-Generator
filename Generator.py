@@ -85,13 +85,13 @@ class VCARDGenerator:
             last = outSetText.pop()
             beforeLast = outSetText.pop()
             if isArabic:
-                outText = f"{last};{'=20'.join(outSetText)};{beforeLast};;"
+                outText = f"{last};{spaceUnicode.join(outSetText)};{beforeLast};;"
             else:
                 outText = f"{last}; {' '.join(outSetText)};{beforeLast};;"
         if isArabic:
-            return ";" + VcardCharsetQ + outText
+            return arDelimiter + VcardCharsetQ + outText
         else:
-            return ":" + outText
+            return enDelimiter + outText
 
     def getFormattedDefaultFileName(self) -> str:
         if self.hasOrganization():

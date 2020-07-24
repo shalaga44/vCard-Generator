@@ -46,7 +46,7 @@ def isProbablyArabicText(text):
 def encodeVcardArabic(text: str) -> str:
     enText = text.encode("UTF-8")
     hexTextList = str(enText).split("\\x")[1:-1] + [str(enText).split("\\x")[-1][:-1]]
-    joinedHexText = "=" + "=".join(hexTextList).replace(" ", "=20")
+    joinedHexText = "=" + "=".join(hexTextList).replace(" ", spaceUnicode)
     return joinedHexText
 
 
@@ -71,15 +71,15 @@ def encodedArabicList(textList: list) -> list:
 def encodedArabicFirstName(contact: Contact) -> str:
     nameList = contact.username.split()
     encodedNameList = encodedArabicList(nameList)
-    out = "=20".join(encodedNameList)
+    out = spaceUnicode.join(encodedNameList)
     return VcardCharsetQ + out
 
 
 def getSupportedTextOf(text: str):
     if isProbablyArabicText(text):
-        return ";" + VcardCharsetQ + encodeVcardArabic(text)
+        return arDelimiter + VcardCharsetQ + encodeVcardArabic(text)
     else:
-        return ":" + text
+        return enDelimiter + text
 
 
 def getSupportedListTextOf(text: str):

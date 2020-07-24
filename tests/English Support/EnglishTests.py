@@ -36,44 +36,27 @@ class NameTestCases(unittest.TestCase):
     def test_has_en_1_Name(self):
         self.contact = generateSimpleSingleEnContact(1)
         self.generator.makeVcardFromContacts([self.contact])
-        hasName = False
         for line in getLinesIn(self.generator.getVcardText()):
             if isLineName(self, line):
                 generatorName = getVcardLineContent(line)
-                if generatorName == getContactParsedText(self.contact.username):
-                    hasName = True
-                else:
-                    raise Exception("Contact Name Didn't Match")
-
-        self.assertTrue(hasName)
+                self.assertEqual(getContactParsedText(self.contact.username), generatorName)
 
     def test_has_en_2_Name(self):
         self.contact = generateSimpleSingleEnContact(2)
         self.generator.makeVcardFromContacts([self.contact])
-        hasName = False
         for line in getLinesIn(self.generator.getVcardText()):
             if isLineName(self, line):
                 generatorName = getVcardLineContent(line)
-                if generatorName == getContactParsedText(self.contact.username):
-                    hasName = True
-                else:
-                    raise Exception("Contact Name Didn't Match")
+                self.assertEqual(getContactParsedText(self.contact.username), generatorName)
 
-        self.assertTrue(hasName)
 
-    def test_has_en_3_Name(self):
-        self.contact = generateSimpleSingleEnContact(3)
-        self.generator.makeVcardFromContacts([self.contact])
-        hasName = False
-        for line in getLinesIn(self.generator.getVcardText()):
-            if isLineName(self, line):
-                generatorName = getVcardLineContent(line)
-                if generatorName == getContactParsedText(self.contact.username):
-                    hasName = True
-                else:
-                    raise Exception("Contact Name Didn't Match")
-
-        self.assertTrue(hasName)
+def test_has_en_3_Name(self):
+    self.contact = generateSimpleSingleEnContact(3)
+    self.generator.makeVcardFromContacts([self.contact])
+    for line in getLinesIn(self.generator.getVcardText()):
+        if isLineName(self, line):
+            generatorName = getVcardLineContent(line)
+            self.assertEqual(getContactParsedText(self.contact.username), generatorName)
 
 
 if __name__ == '__main__':
