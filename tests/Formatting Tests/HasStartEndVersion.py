@@ -30,11 +30,11 @@ class GeneralTestCases(unittest.TestCase):
         self.assertTrue(isEnded)
 
     def test_has_version(self):
-        hasEnFirstName = False
+        hasVersion = False
         for line in self.generator.getVcardText().split(newLine):
             if line == self.generator.vcardVersionQ:
-                hasEnFirstName = True
-        self.assertTrue(hasEnFirstName)
+                hasVersion = True
+        self.assertTrue(hasVersion)
 
     def generateTestEnContact(self):
         for nameLength in range(5):
