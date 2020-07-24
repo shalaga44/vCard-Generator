@@ -18,7 +18,7 @@ class GeneralTestCases(unittest.TestCase):
 
     def test_has_cell(self):
         hasCell = False
-        for line in self.generator.getVcardText().split(newLine):
+        for line in getLinesIn(self.generator.getVcardText()):
             if isNewContact(self, line):
                 self.contact = self.testContacts.pop()
             if isCellLine(self, line):
@@ -30,7 +30,7 @@ class GeneralTestCases(unittest.TestCase):
 
     def test_has_org(self):
         hasOrg = False
-        for line in self.generator.getVcardText().split(newLine):
+        for line in getLinesIn(self.generator.getVcardText()):
             if isNewContact(self, line):
                 self.contact = self.testContacts.pop()
             if isOrgLine(self, line):

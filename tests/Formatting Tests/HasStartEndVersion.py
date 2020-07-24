@@ -3,6 +3,7 @@ import unittest
 from ContactsGenerators.EnglishContactGenerator import generateSimpleSingleEnContact
 from Generator import VCARDGenerator
 from Utils.Strings import *
+from Utils.functions import getLinesIn
 
 
 class GeneralTestCases(unittest.TestCase):
@@ -22,7 +23,7 @@ class GeneralTestCases(unittest.TestCase):
 
     def test_has_started_and_ended(self):
         isEnded = True
-        for line in self.generator.getVcardText().split(newLine):
+        for line in getLinesIn(self.generator.getVcardText()):
             if line == self.generator.vcardStartQ and isEnded:
                 isEnded = False
             elif line == self.generator.vcardEndQ and not isEnded:
@@ -31,7 +32,7 @@ class GeneralTestCases(unittest.TestCase):
 
     def test_has_version(self):
         hasVersion = False
-        for line in self.generator.getVcardText().split(newLine):
+        for line in getLinesIn(self.generator.getVcardText()):
             if line == self.generator.vcardVersionQ:
                 hasVersion = True
         self.assertTrue(hasVersion)

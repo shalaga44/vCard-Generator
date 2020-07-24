@@ -44,7 +44,7 @@ class NameTestCases(unittest.TestCase):
         self.testContacts = []
         super().setUp()
 
-    def test_has_en_Name1(self):
+    def test_has_en_1_Name(self):
         self.contact = generateSimpleSingleEnContact(1)
         self.generator.makeVcardFromContacts([self.contact])
         hasName = False

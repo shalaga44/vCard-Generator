@@ -43,7 +43,7 @@ def generateTestEnContact(count=7):
     testContacts = []
     for nameLength in range(1, count, 1):
         contact = generateSimpleSingleEnContact(nameLength)
-        testContacts.append( contact)
+        testContacts.append(contact)
     return testContacts
 
 

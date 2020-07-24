@@ -65,7 +65,7 @@ class VCARDGenerator:
     @staticmethod
     def cleanedVcardText(text):
         cleanText = emptyString
-        for t in text.strip().split(newLine):
+        for t in getLinesIn(text.strip()):
             if t.split(":")[1] != '':
                 cleanText += t + newLine
         return cleanText
@@ -105,5 +105,5 @@ class VCARDGenerator:
 
     def proceed_export_vcf(self, filename):
         with open(filename, ioWriteFlag) as f:
-            for line in self.getVcardText().split(newLine):
+            for line in getLinesIn(self.getVcardText()):
                 f.write(line + newLine)
