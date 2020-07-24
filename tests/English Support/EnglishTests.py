@@ -13,29 +13,18 @@ class GeneralTestCases(unittest.TestCase):
         super().setUp()
 
     def test_has_en_first_name(self):
-        hasEnFirstName = False
         for line in getLinesIn(self.generator.getVcardText()):
             if isNewContact(self, line):
                 self.contact = self.testContacts.pop(0)
             if isLineFirstName(self, line):
-                if getVcardLineContent(line) == self.contact.username:
-                    hasEnFirstName = True
-                else:
-                    raise Exception("First Name Didn't Match")
-        self.assertTrue(hasEnFirstName)
+                self.assertEqual(self.contact.username, getVcardLineContent(line))
 
     def test_has_en_Name(self):
-        hasName = False
         for line in getLinesIn(self.generator.getVcardText()):
             if isNewContact(self, line):
                 self.contact = self.testContacts.pop(0)
             if isLineName(self, line):
-                if getVcardLineContent(line) == getContactParsedText(self.contact.username):
-                    hasName = True
-                else:
-                    raise Exception("Contact Name Didn't Match")
-
-        self.assertTrue(hasName)
+                self.assertEqual(getContactParsedText(self.contact.username), getVcardLineContent(line))
 
 
 class NameTestCases(unittest.TestCase):

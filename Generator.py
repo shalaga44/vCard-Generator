@@ -16,13 +16,13 @@ class VCARDGenerator:
         self.text = emptyString
         self.vcardStartQ = "BEGIN:VCARD"
         self.vcardVersionQ = "VERSION:2.1"
-        self.vcardNameQ = "N:"
-        self.vcardFirstNameQ = "FN:"
-        self.vcardCellQ = "TEL;CELL:"
-        self.vcardEmailQ = "EMAIL;HOME:"
-        self.vcardOrgQ = "ORG:"
-        self.vcardTitleQ = "TITLE:"
-        self.vcardNoteQ = "NOTE:"
+        self.vcardNameQ = "N"
+        self.vcardFirstNameQ = "FN"
+        self.vcardCellQ = "TEL;CELL"
+        self.vcardEmailQ = "EMAIL;HOME"
+        self.vcardOrgQ = "ORG"
+        self.vcardTitleQ = "TITLE"
+        self.vcardNoteQ = "NOTE"
         self.vcardEndQ = "END:VCARD"
 
     def makeVcardFromContacts(self, contacts):
@@ -42,10 +42,11 @@ class VCARDGenerator:
         self.isContactsChanged = False
         for contact in self.contacts:
             temText = emptyString
+            self.contact = contact
 
             temText += self.vcardStartQ + newLine
             temText += self.vcardVersionQ + newLine
-            temText += self.vcardNameQ + self.getOrdered(contact.username) + newLine
+            temText += self.vcardNameQ + self.getOrdered(getSupportedListTextOf(contact.username)) + newLine
             temText += self.vcardFirstNameQ + getSupportedTextOf(contact.username) + newLine
             temText += self.vcardCellQ + getSupportedTextOf(contact.cell) + newLine
             temText += self.vcardEmailQ + getSupportedTextOf(contact.email) + newLine
@@ -71,9 +72,8 @@ class VCARDGenerator:
                 cleanText += t + newLine
         return cleanText
 
-    @staticmethod
-    def getOrdered(text) -> str:
-        outSetText = text.split()
+    def getOrdered(self, outSetText) -> str:
+        isArabic = isProbablyArabicText(self.contact.username)
         outText = emptyString
         if len(outSetText) == 1:
             outText = f";{outSetText[0]};;;"
@@ -84,8 +84,14 @@ class VCARDGenerator:
         elif len(outSetText) > 3:
             last = outSetText.pop()
             beforeLast = outSetText.pop()
-            outText = f"{last}; {' '.join(outSetText)};{beforeLast};;"
-        return outText
+            if isArabic:
+                outText = f"{last};{'=20'.join(outSetText)};{beforeLast};;"
+            else:
+                outText = f"{last}; {' '.join(outSetText)};{beforeLast};;"
+        if isArabic:
+            return ";" + VcardCharsetQ + outText
+        else:
+            return ":" + outText
 
     def getFormattedDefaultFileName(self) -> str:
         if self.hasOrganization():

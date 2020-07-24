@@ -17,29 +17,18 @@ class GeneralTestCases(unittest.TestCase):
         super().setUp()
 
     def test_has_cell(self):
-        hasCell = False
         for line in getLinesIn(self.generator.getVcardText()):
             if isNewContact(self, line):
                 self.contact = self.testContacts.pop()
             if isCellLine(self, line):
-                if line == self.generator.vcardCellQ + self.contact.cell:
-                    hasCell = True
-                else:
-                    raise Exception("Phone Cell Didn't Match")
-        self.assertTrue(hasCell)
+                self.assertEqual(self.generator.vcardCellQ + ":" + self.contact.cell,line)
 
     def test_has_org(self):
-        hasOrg = False
         for line in getLinesIn(self.generator.getVcardText()):
             if isNewContact(self, line):
                 self.contact = self.testContacts.pop()
             if isOrgLine(self, line):
-                if line == self.generator.vcardOrgQ + self.contact.org:
-                    hasOrg = True
-                else:
-                    raise Exception("Org Name Didn't Match")
-
-        self.assertTrue(hasOrg)
+                self.assertEqual(self.generator.vcardOrgQ + ":" + self.contact.org, line)
 
 
 if __name__ == '__main__':

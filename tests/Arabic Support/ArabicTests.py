@@ -42,7 +42,7 @@ class GeneralTestCases(unittest.TestCase):
                 deLineContent = decodeVcardArabic(supString(lineContent, VcardCharsetQ))
                 if isProbablyArabicText(self.contact.username):
                     deContactFirstName = encodedArabicFirstName(self.contact)
-                    self.assertEqual(deContactFirstName, lineContent)
+                    self.assertEqual(deContactFirstName, VcardCharsetQ+lineContent)
                     self.assertEqual(self.contact.username, deLineContent)
 
     if __name__ == '__main__':

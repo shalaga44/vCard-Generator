@@ -20,7 +20,7 @@ def isCellLine(self, line):
 
 
 def isLineName(self, line):
-    if line[:len(self.generator.vcardNameQ)] == self.generator.vcardNameQ:
+    if line[:len(self.generator.vcardNameQ) + 1] == self.generator.vcardNameQ + ":":
         return True
     else:
         return False
@@ -61,7 +61,7 @@ def supString(s1, s2):
     return s1.replace(s2, emptyString)
 
 
-def encodedArabicList(textList: str) -> list:
+def encodedArabicList(textList: list) -> list:
     encodedList = []
     for text in textList:
         encodedList.append(encodeVcardArabic(text))
@@ -77,9 +77,16 @@ def encodedArabicFirstName(contact: Contact) -> str:
 
 def getSupportedTextOf(text: str):
     if isProbablyArabicText(text):
-        return VcardCharsetQ + encodeVcardArabic(text)
+        return ";" + VcardCharsetQ + encodeVcardArabic(text)
     else:
-        return text
+        return ":" + text
+
+
+def getSupportedListTextOf(text: str):
+    if isProbablyArabicText(text):
+        return encodedArabicList(text.split())
+    else:
+        return text.split()
 
 
 def isOrgLine(self, line):
