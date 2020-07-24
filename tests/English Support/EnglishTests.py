@@ -30,7 +30,7 @@ class GeneralTestCases(unittest.TestCase):
             if isNewContact(self, line):
                 self.contact = self.testContacts.pop(0)
             if isLineName(self, line):
-                if getVcardLineContent(line) == getContactNameParsed(self.contact):
+                if getVcardLineContent(line) == getContactParsedText(self.contact.username):
                     hasName = True
                 else:
                     raise Exception("Contact Name Didn't Match")
@@ -51,7 +51,7 @@ class NameTestCases(unittest.TestCase):
         for line in getLinesIn(self.generator.getVcardText()):
             if isLineName(self, line):
                 generatorName = getVcardLineContent(line)
-                if generatorName == getContactNameParsed(self.contact):
+                if generatorName == getContactParsedText(self.contact.username):
                     hasName = True
                 else:
                     raise Exception("Contact Name Didn't Match")
@@ -65,7 +65,7 @@ class NameTestCases(unittest.TestCase):
         for line in getLinesIn(self.generator.getVcardText()):
             if isLineName(self, line):
                 generatorName = getVcardLineContent(line)
-                if generatorName == getContactNameParsed(self.contact):
+                if generatorName == getContactParsedText(self.contact.username):
                     hasName = True
                 else:
                     raise Exception("Contact Name Didn't Match")
@@ -79,7 +79,7 @@ class NameTestCases(unittest.TestCase):
         for line in getLinesIn(self.generator.getVcardText()):
             if isLineName(self, line):
                 generatorName = getVcardLineContent(line)
-                if generatorName == getContactNameParsed(self.contact):
+                if generatorName == getContactParsedText(self.contact.username):
                     hasName = True
                 else:
                     raise Exception("Contact Name Didn't Match")

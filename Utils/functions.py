@@ -43,6 +43,33 @@ def isProbablyArabicText(text):
     return isArabic
 
 
+def encodeVcardArabic(text: str) -> str:
+    enText = text.encode("UTF-8")
+    hexTextList = str(enText).split("\\x")[1:-1] + [str(enText).split("\\x")[-1][:-1]]
+    joinedHexText = "=" + "=".join(hexTextList)
+    return joinedHexText
+
+
+def decodeVcardArabic(text: str) -> str:
+    hexTextList = text.split("=")[1:]
+    joinedHexText = " ".join(hexTextList)
+    enText = bytes.fromhex(joinedHexText)
+    return enText.decode("UTF-8")
+
+
+def encodedArabicList(textList: str) -> list:
+    encodedList = []
+    for text in textList:
+        encodedList += encodeVcardArabic(text)
+    return encodedList
+
+
+def encodedArabicFirstName(contact: Contact) -> str:
+    nameList = contact.username.split()
+    encodedNameList = encodedArabicList(nameList)
+    return "".join(encodedNameList)
+
+
 def isOrgLine(self, line):
     if line[:len(self.generator.vcardOrgQ)] == self.generator.vcardOrgQ:
         return True
@@ -71,8 +98,8 @@ def getLinesIn(text) -> str:
         yield line
 
 
-def getContactNameParsed(contact: Contact) -> str:
-    nameList = contact.username.split()
+def getContactParsedText(text: str) -> str:
+    nameList = text.split()
     if len(nameList) == 1:
         return f";{nameList[0]};;;"
     elif len(nameList) == 2:
