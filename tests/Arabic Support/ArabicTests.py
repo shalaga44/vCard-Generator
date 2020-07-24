@@ -23,14 +23,15 @@ class GeneralTestCases(unittest.TestCase):
         self.assertFalse(isProbablyArabicText(englishContact.username))
 
     def test_encode_decode_arabic(self):
-        arabicContact = generateSimpleSingleArContact(1)
+        for wordLength in range(1, 6):
+            arabicContact = generateSimpleSingleArContact(wordLength)
 
-        self.assertEqual(arabicContact.username,
-                         decodeVcardArabic(encodeVcardArabic(arabicContact.username)))
-        self.assertEqual(arabicContact.cell,
-                         decodeVcardArabic(encodeVcardArabic(arabicContact.cell)))
-        self.assertEqual(arabicContact.org,
-                         decodeVcardArabic(encodeVcardArabic(arabicContact.org)))
+            self.assertEqual(arabicContact.username,
+                             decodeVcardArabic(encodeVcardArabic(arabicContact.username)))
+            self.assertEqual(arabicContact.cell,
+                             decodeVcardArabic(encodeVcardArabic(arabicContact.cell)))
+            self.assertEqual(arabicContact.org,
+                             decodeVcardArabic(encodeVcardArabic(arabicContact.org)))
 
-        if __name__ == '__main__':
-            unittest.main()
+    if __name__ == '__main__':
+        unittest.main()

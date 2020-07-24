@@ -46,7 +46,7 @@ def isProbablyArabicText(text):
 def encodeVcardArabic(text: str) -> str:
     enText = text.encode("UTF-8")
     hexTextList = str(enText).split("\\x")[1:-1] + [str(enText).split("\\x")[-1][:-1]]
-    joinedHexText = "=" + "=".join(hexTextList)
+    joinedHexText = "=" + "=".join(hexTextList).replace(" ", "=20")
     return joinedHexText
 
 
@@ -68,6 +68,10 @@ def encodedArabicFirstName(contact: Contact) -> str:
     nameList = contact.username.split()
     encodedNameList = encodedArabicList(nameList)
     return "".join(encodedNameList)
+
+
+def getSupportedTextOf(text: str):
+    pass
 
 
 def isOrgLine(self, line):
